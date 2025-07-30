@@ -809,3 +809,39 @@ weather_data = [parse_line(x) for x in weather.split("\n") if x]
 ('USC00110338', 1893, 2, 'PRCP', 15.0, 0.0, 2.0, 28), 
 ('USC00110338', 1893, 2, 'SNOW', 12.7, 0.0, 0.6, 28)]
 """
+
+# saving the weather data in a database
+import sqlite3
+
+conn = sqlite3.connect("Weather_Data/weather_data.db")
+cursor = conn.cursor()
+
+# create weather table
+create_weather = """CREATE TABLE "weather" (
+    "id" text NOT NULL,
+    "year" integer NOT NULL,
+    "month" integer NOT NULL,
+    "element" text NOT NULL,
+    "max" real,
+    "min" real,
+    "mean" real,
+    "count" integer)
+"""
+
+cursor.execute(create_weather)
+conn.commit()
+
+# store parsed weather data in database
+for record in weather_data:
+    cursor.execute("""insert into weather (id,year,month,element,max,min,mean,count) values (?,?,?,?,?,?,?,?)""", record)
+
+cursor.execute("""select * from weather where element='TMAX' order by year, month""")
+tmax_data = cursor.fetchall()
+#print(tmax_data[:5])
+"""
+[('USC00110338', 1893, 1, 'TMAX', 4.4, -20.0, -7.8, 31),
+('USC00110338', 1893, 2, 'TMAX', 5.6, -17.2, -0.9, 27),
+('USC00110338', 1893, 3, 'TMAX', 20.6, -7.2, 5.6, 30),
+('USC00110338', 1893, 4, 'TMAX', 28.9, 3.3, 13.5, 30),
+('USC00110338', 1893, 5, 'TMAX', 30.6, 7.2, 19.2, 31)]
+"""
