@@ -753,3 +753,59 @@ USC00110338189301TMAX  -11  6  -44  6 -139  6  -83  6 -100  6  -83  6  -72  6  -
 USC00110338189301TMIN  -50  6 -139  6 -250  6 -144  6 -178  6 -228  6 -144  6 -222  6 -178  6 -250  6 -200  6 -206  6 -267  6 -272  6 -294  6 -294  6 -311  6 -200  6 -233  6 -178  6 -156  6  -89  6 -200  6 -194  6 -194  6 -178  6 -200  6  -33 I6 -156  6 -139  6 -167  6
 """
 
+# parsing the weather data
+def parse_line(line):
+    """
+    parse line of weather data
+    removes values of -9999 (missing value)
+    """
+    # return None if line is empty
+    if not line:
+        return None
+    
+    # split out first 4 fields and string containing temperature values
+    record, temperature_string = (line[:11],int(line[11:15]),int(line[15:17]),
+                                  line[17:21]), line[21:]
+    # raise exception if the temperature string is too short
+    if len(temperature_string) < 248:
+        raise ValueError("String not long enough - {} {}".format(temperature_string,str(line)))
+    
+    # use a list comprehension on the temperature_string to extract and convert
+    values = [float(temperature_string[i:i + 5])/10 for i in range(0,248,8)
+              if not temperature_string[i:i + 5].startswith("-9999")]
+    
+    # get the number of calues, the max and min, and calculate average
+    count = len(values)
+    tmax = round(max(values),1)
+    tmin = round(min(values),1)
+    mean = round(sum(values)/count,1)
+
+    # add the temperature summary calues to the record fields extracted earlier and return
+    return record + (tmax,tmin,mean,count)
+
+#print(parse_line(weather[:270]))
+
+"""
+('USC00110338', 1893, 1, 'TMAX', 4.4, -20.0, -7.8, 31)
+"""
+
+# process all weather data
+# list comprehension, will not parse empty lines
+weather_data = [parse_line(x) for x in weather.split("\n") if x]
+#print(len(weather_data))
+"""
+11070
+"""
+#print(weather_data[:10])
+"""
+[('USC00110338', 1893, 1, 'TMAX', 4.4, -20.0, -7.8, 31), 
+('USC00110338', 1893, 1, 'TMIN', -3.3, -31.1, -19.2, 31),
+('USC00110338', 1893, 1, 'PRCP', 8.9, 0.0, 1.1, 31), 
+('USC00110338', 1893, 1, 'SNOW', 10.2, 0.0, 1.0, 31), 
+('USC00110338', 1893, 1, 'WT16', 0.1, 0.1, 0.1, 2), 
+('USC00110338', 1893, 1, 'WT18', 0.1, 0.1, 0.1, 11), 
+('USC00110338', 1893, 2, 'TMAX', 5.6, -17.2, -0.9, 27), 
+('USC00110338', 1893, 2, 'TMIN', 0.6, -26.1, -11.7, 27), 
+('USC00110338', 1893, 2, 'PRCP', 15.0, 0.0, 2.0, 28), 
+('USC00110338', 1893, 2, 'SNOW', 12.7, 0.0, 0.6, 28)]
+"""
