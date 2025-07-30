@@ -817,23 +817,23 @@ conn = sqlite3.connect("Weather_Data/weather_data.db")
 cursor = conn.cursor()
 
 # create weather table
-create_weather = """CREATE TABLE "weather" (
-    "id" text NOT NULL,
-    "year" integer NOT NULL,
-    "month" integer NOT NULL,
-    "element" text NOT NULL,
-    "max" real,
-    "min" real,
-    "mean" real,
-    "count" integer)
-"""
+#create_weather = """CREATE TABLE "weather" (
+#    "id" text NOT NULL,
+#    "year" integer NOT NULL,
+#    "month" integer NOT NULL,
+#    "element" text NOT NULL,
+#    "max" real,
+#    "min" real,
+#    "mean" real,
+#    "count" integer)
+#"""
 
-cursor.execute(create_weather)
-conn.commit()
+#cursor.execute(create_weather)
+#conn.commit()
 
 # store parsed weather data in database
-for record in weather_data:
-    cursor.execute("""insert into weather (id,year,month,element,max,min,mean,count) values (?,?,?,?,?,?,?,?)""", record)
+#for record in weather_data:
+#    cursor.execute("""insert into weather (id,year,month,element,max,min,mean,count) values (?,?,?,?,?,?,?,?)""", record)
 
 cursor.execute("""select * from weather where element='TMAX' order by year, month""")
 tmax_data = cursor.fetchall()
@@ -844,4 +844,16 @@ tmax_data = cursor.fetchall()
 ('USC00110338', 1893, 3, 'TMAX', 20.6, -7.2, 5.6, 30),
 ('USC00110338', 1893, 4, 'TMAX', 28.9, 3.3, 13.5, 30),
 ('USC00110338', 1893, 5, 'TMAX', 30.6, 7.2, 19.2, 31)]
+"""
+
+# selecting data
+tmax_data = [x for x in weather_data if x[3] == 'TMAX']
+tmin_data = [x for x in weather_data if x[3] == 'TMIN']
+#print(tmin_data[:5])
+"""
+[('USC00110338', 1893, 1, 'TMIN', -3.3, -31.1, -19.2, 31),
+('USC00110338', 1893, 2, 'TMIN', 0.6, -26.1, -11.7, 27),
+('USC00110338', 1893, 3, 'TMIN', 3.3, -13.3, -4.6, 31),
+('USC00110338', 1893, 4, 'TMIN', 12.2, -5.6, 2.2, 30),
+('USC00110338', 1893, 5, 'TMIN', 14.4, -0.6, 5.7, 31)]
 """
