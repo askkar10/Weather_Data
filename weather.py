@@ -714,3 +714,16 @@ Inventory(station='USC00112736', latitude=42.0628, longitude=-88.2861, element='
 Inventory(station='USC00112736', latitude=42.0628, longitude=-88.2861, element='TMIN', start=1897, end=2025),
 Inventory(station='USC00476922', latitude=42.7028, longitude=-87.7858, element='TMAX', start=1896, end=2025)]
 """
+
+# select a station and get the station metadata
+from collections import namedtuple
+station_id = "USC00110338"
+
+# parse stations
+station = namedtuple("Station",['station_id','latitude','longitde','elevation','state',
+                                'name','start','end'])
+
+stations = [(x[0:11], float(x[12:20]), float(x[21:30]), float(x[31:37]),x[38:40].strip(),
+             x[41:71].strip()) for x in stations_txt.split("\n") if x.startswith(station_id)]
+station = station(*stations[0]+ (inventory_temps[0].start,inventory_temps[0].end))
+print(station)
