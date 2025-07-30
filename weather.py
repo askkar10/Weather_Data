@@ -726,4 +726,30 @@ station = namedtuple("Station",['station_id','latitude','longitde','elevation','
 stations = [(x[0:11], float(x[12:20]), float(x[21:30]), float(x[31:37]),x[38:40].strip(),
              x[41:71].strip()) for x in stations_txt.split("\n") if x.startswith(station_id)]
 station = station(*stations[0]+ (inventory_temps[0].start,inventory_temps[0].end))
-print(station)
+#print(station)
+
+"""
+Station(station_id='USC00110338', latitude=41.7803, longitde=-88.3092, elevation=205.7, state='IL', 
+name='AURORA WATER', start=1893, end=2025)
+"""
+
+# fetching and parsing the actual weather data
+# fetching the data
+# fetch daily records for selected station
+r = requests.get('https://www1.ncdc.noaa.gov/pub/data/ghcn/daily/all/{}.dly'.format(station.station_id))
+weather = r.text
+
+# saving to a text file
+#with open('Weather_Data/weather_{}.txt'.format(station),"w") as weather_file:
+#    weather_file.write(weather)
+
+# read from saved file
+with open("Weather_Data/weather_{}.txt".format(station)) as weather_file:
+    weather = weather_file.read()
+#print(weather[:540])
+
+"""
+USC00110338189301TMAX  -11  6  -44  6 -139  6  -83  6 -100  6  -83  6  -72  6  -83  6  -33  6 -178  6 -150  6 -128  6 -172  6 -200  6 -189  6 -150  6 -106  6  -61  6  -94  6  -33  6  -33  6  -33  6  -33  6    6  6  -33  6  -78  6  -33  6   44  6  -89 I6  -22  6    6  6
+USC00110338189301TMIN  -50  6 -139  6 -250  6 -144  6 -178  6 -228  6 -144  6 -222  6 -178  6 -250  6 -200  6 -206  6 -267  6 -272  6 -294  6 -294  6 -311  6 -200  6 -233  6 -178  6 -156  6  -89  6 -200  6 -194  6 -194  6 -178  6 -200  6  -33 I6 -156  6 -139  6 -167  6
+"""
+
