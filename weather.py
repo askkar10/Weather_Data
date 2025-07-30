@@ -857,3 +857,20 @@ tmin_data = [x for x in weather_data if x[3] == 'TMIN']
 ('USC00110338', 1893, 4, 'TMIN', 12.2, -5.6, 2.2, 30),
 ('USC00110338', 1893, 5, 'TMIN', 14.4, -0.6, 5.7, 31)]
 """
+
+# using pandas to graph data and saving to excel and csv
+import pandas as pd
+import matplotlib.pyplot as plt
+
+tmax_df = pd.DataFrame(tmax_data,columns=['Station','Year','month','Element','Max','Min','Mean','Days'])
+tmin_df = pd.DataFrame(tmin_data,columns=['Station','Year','month','Element','Max','Min','Mean','Days'])
+
+# select Year, Min, Max, Mean columns, groupby year,average and line plot
+tmin_df[['Year','Min','Mean','Max']].groupby('Year').mean().plot(kind='line',figsize=(16,8))
+#print(plt.show())
+
+# saving to excel and csv tmin and tmax data
+#tmax_df.to_excel("Weather_Data/tmax.xlsx")
+#tmin_df.to_excel("Weather_Data/tmin.xlsx")
+#tmax_df.to_csv("Weather_Data/tmax.csv")
+#tmin_df.to_csv("Weather_Data/tmin.csv")
