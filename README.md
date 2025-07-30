@@ -1,2 +1,2 @@
 # Weather_Data
-Fetch weather data, clea nit and the graph it
+Fetch weather data, clean it and then graph it
